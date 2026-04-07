@@ -1,0 +1,47 @@
+body {
+    margin: 0;
+    display: flex;
+    height: 100vh;
+  }
+  
+  /* izquierda */
+  #toolbar {
+    width: 150px;
+    background: #222;
+    color: white;
+    padding: 10px;
+  }
+  
+  /* centro */
+  #canvas {
+    flex: 1;
+    position: relative;
+    background: #f0f0f0;
+  }
+  
+  /* derecha (INSPECTOR) */
+  #inspector {
+    width: 220px;
+    background: #1e1e1e;
+    color: white;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  
+  #inspector input {
+    margin-bottom: 10px;
+  }
+  
+  /* elementos */
+  .draggable {
+    position: absolute;
+    padding: 10px;
+    border: 1px solid black;
+    cursor: move;
+  }
+  
+  .selected {
+    outline: 2px solid blue;
+  }
