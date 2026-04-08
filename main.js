@@ -1,3 +1,5 @@
+import { applyTransform } from "./core/transform";
+
 const canvas = document.getElementById("canvas");
 
 let selected = null;
@@ -122,10 +124,7 @@ function rgbToHex(rgb) {
 document.addEventListener("mousemove", (e) => {
   if (!dragging) return;
 
-  const canvasRect = canvas.getBoundingClientRect();
-
-  dragging.style.left = (e.clientX - canvasRect.left - offsetX) + "px";
-  dragging.style.top = (e.clientY - canvasRect.top - offsetY) + "px";
+  applyTransform(e);
 });
 
 // 🛑 Soltar
