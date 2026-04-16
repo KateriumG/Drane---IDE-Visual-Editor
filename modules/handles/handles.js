@@ -34,8 +34,15 @@ function createHandles() {
 
     handle.addEventListener("mousedown", (e) => {
       e.stopPropagation();
+
       state.handleAction = "resize";
-      emitter.emit("startTransform", state.selected);
+      state.handleDirection = pos;
+
+      emit("startTransform", { 
+        element: state.selected,
+        mouseX: e.clientX,
+        mouseY: e.clientY,
+      });
     });
 
     handlesContainer.appendChild(handle);
@@ -46,7 +53,10 @@ function createHandles() {
 
   rotate.addEventListener("mousedown", (e) => {
     e.stopPropagation();
+
     state.handleAction = "rotate";
+    state.handleDirection = "rotate";
+
     emit("startTransform", {
         element: state.selected,
         mouseX: e.clientX,
