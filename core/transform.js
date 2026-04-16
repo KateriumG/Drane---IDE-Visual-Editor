@@ -4,6 +4,16 @@ import { state } from "./state.js";
 export function applyTransform(e, el, dragData, canvas) {
   if (!el) return;
 
+    if (state.handleAction === "resize") {
+    resizeElement(e, el, dragData);
+    return;
+  }
+
+  if (state.handleAction === "rotate") {
+    rotateElement(e, el, dragData);
+    return;
+  }
+
   switch (state.tool) {
     case "move":
       moveElement(e, el, dragData);
@@ -107,4 +117,17 @@ function resizeElement(e, el, dragData) {
   el.style.left = left + "px";
   el.style.top = top + "px";
 
+}
+
+function globalResize(e, el, dragData) {
+  const dx = e.clientX - dragData.startMouseX;
+  const dy = e.clientY - dragData.startMouseY;
+
+  const minSize = 20;
+
+  el.style.width =
+    Math.max(minSize, dragData.startWidth + dx) + "px";
+
+  el.style.height =
+    Math.max(minSize, dragData.startHeight + dy) + "px";
 }

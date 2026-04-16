@@ -15,6 +15,30 @@ let dragData = {};
 export function initCanvas() {
   canvas = document.getElementById("canvas");
 
+  canvas.addEventListener("mousedown", (e) => {
+  if (!state.selected) return;
+
+  if (state.tool === "move" ||
+      state.tool === "rotate" ||
+      state.tool === "resize") {
+
+    const rect = state.selected.getBoundingClientRect();
+
+    dragging = state.selected;
+
+    dragData = {
+      startMouseX: e.clientX,
+      startMouseY: e.clientY,
+      startLeft: parseFloat(state.selected.style.left) || 0,
+      startTop: parseFloat(state.selected.style.top) || 0,
+      startWidth: rect.width,
+      startHeight: rect.height,
+      startRotation: parseFloat(state.selected.dataset.rotation || 0),
+      startAngle: getMouseAngle(e, rect)
+    };
+  }
+});
+
   // Escuchar eventos de transformación iniciados desde los handles
   on("startTransform", ({element, mouseX, mouseY}) => {
   dragging = element;
@@ -59,6 +83,27 @@ export function createElement(type) {
   el.style.left = "50px";
   el.style.top = "50px";
 
+  el.addEventListener("mousedown", (e) => {
+  selectElement(el);
+
+  if (state.tool !== "select") return;
+
+  dragging = el;
+
+  const rect = el.getBoundingClientRect();
+
+  dragData = {
+    startMouseX: e.clientX,
+    startMouseY: e.clientY,
+    startLeft: parseFloat(el.style.left) || 0,
+    startTop: parseFloat(el.style.top) || 0,
+    startWidth: rect.width,
+    startHeight: rect.height,
+    startRotation: parseFloat(el.dataset.rotation || 0),
+    startAngle: getMouseAngle(e, rect)
+  };
+});
+
   canvas.appendChild(el);
 
   makeInteractive(el);
@@ -70,6 +115,8 @@ export function createElement(type) {
 function makeInteractive(el) {
   el.addEventListener("mousedown", (e) => {
     selectElement(el);
+
+    if (state.tool !== "select") return;
 
     const rect = el.getBoundingClientRect();
 
@@ -83,7 +130,9 @@ function makeInteractive(el) {
     startWidth: rect.width,
     startHeight: rect.height,
     offsetX: e.offsetX,
-    offsetY: e.offsetY
+    offsetY: e.offsetY,
+    startRotation: parseFloat(el.dataset.rotation || 0),
+    startAngle: getMouseAngle(e, rect)
   };
 
 
@@ -99,29 +148,16 @@ function makeInteractive(el) {
 
 }
 
-canvas.addEventListener("mousedown", (e) => {
-  if (!state.selected) return;
 
-  if (state.tool === "move" ||
-      state.tool === "rotate" ||
-      state.tool === "resize") {
+function getMouseAngle(e, rect) {
+  const centerX = rect.left + rect.width / 2;
+  const centerY = rect.top + rect.height / 2;
 
-    const rect = state.selected.getBoundingClientRect();
-
-    dragging = state.selected;
-
-    dragData = {
-      startMouseX: e.clientX,
-      startMouseY: e.clientY,
-      startLeft: parseFloat(state.selected.style.left) || 0,
-      startTop: parseFloat(state.selected.style.top) || 0,
-      startWidth: rect.width,
-      startHeight: rect.height,
-      startRotation: parseFloat(state.selected.dataset.rotation || 0),
-      startAngle: getMouseAngle(e, rect)
-    };
-  }
-});
+  return Math.atan2(
+    e.clientY - centerY,
+    e.clientX - centerX
+  ) * 180 / Math.PI;
+}
 
 // eventos globales
 function setupGlobalEvents() {
