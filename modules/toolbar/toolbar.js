@@ -40,6 +40,8 @@ function bindEvents() {
       const tool = btn.dataset.tool;
 
       state.tool = tool;
+      state.handleAction = null;
+      state.handleDirection = null;
 
       emit("toolChanged", tool);
     });

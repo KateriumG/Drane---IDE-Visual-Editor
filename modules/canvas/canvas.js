@@ -136,7 +136,7 @@ function makeInteractive(el) {
   };
 
 
-    if (state.tool !== "select") {
+    if (state.tool === "select") {
       dragging = el;
     }
   });

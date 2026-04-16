@@ -1,4 +1,5 @@
 import { state } from "./state.js";
+import { emit } from "./events.js";
 
 // Este módulo se encarga de aplicar las transformaciones (mover, rotar, redimensionar)
 export function applyTransform(e, el, dragData, canvas) {
@@ -15,6 +16,9 @@ export function applyTransform(e, el, dragData, canvas) {
   }
 
   switch (state.tool) {
+    case "select":
+      moveElement(e, el, dragData);
+      break;
     case "move":
       moveElement(e, el, dragData);
       break;
@@ -24,10 +28,10 @@ export function applyTransform(e, el, dragData, canvas) {
       break;
 
     case "resize":
-      resizeElement(e, el, dragData);
+      globalResize(e, el, dragData)
       break;
   }
-  
+  emit("selectionChanged", el);
 }
 
 function moveElement(e, el, dragData) {
@@ -61,6 +65,9 @@ function resizeElement(e, el, dragData) {
   const dx = e.clientX - dragData.startMouseX;
   const dy = e.clientY - dragData.startMouseY;
 
+  const threshold = 2;
+  if (Math.abs(dx) < threshold && Math.abs(dy) < threshold) return;
+
   let width = dragData.startWidth;
   let height = dragData.startHeight;
   let left = dragData.startLeft;
@@ -68,49 +75,36 @@ function resizeElement(e, el, dragData) {
 
   const minSize = 20;
 
-  switch (state.handleDirection) {
-    case "br":
-      width = Math.max(minSize, dragData.startWidth + dx);
-      height = Math.max(minSize, dragData.startHeight + dy);
-      break;
-
-    case "tr":
-      width = Math.max(minSize, dragData.startWidth + dx);
-
-      const newHeightTR = dragData.startHeight - dy;
-      if (newHeightTR >= minSize) {
-        height = newHeightTR;
-        top = dragData.startTop + dy;
-      }
-      break;
-
-    case "bl":
-      const newWidthBL = dragData.startWidth - dx;
-      if (newWidthBL >= minSize) {
-        width = newWidthBL;
-        left = dragData.startLeft + dx;
-      }
-
-      height = Math.max(minSize, dragData.startHeight + dy);
-      break;
-
-    case "tl":
-      const newWidthTL = dragData.startWidth - dx;
-      if (newWidthTL >= minSize) {
-        width = newWidthTL;
-        left = dragData.startLeft + dx;
-      }
-
-      const newHeightTL = dragData.startHeight - dy;
-      if (newHeightTL >= minSize) {
-        height = newHeightTL;
-        top = dragData.startTop + dy;
-      }
-      break;
+  if (state.handleDirection === "br") {
+    width = Math.max(minSize, dragData.startWidth + dx);
+    height = Math.max(minSize, dragData.startHeight + dy);
   }
+  if (state.handleDirection === "tr") {
+    width = Math.max(minSize, dragData.startWidth + dx);
 
-    width = Math.max(minSize, width);
-  height = Math.max(minSize, height);
+    const newHeight = dragData.startHeight - dy;
+    height = Math.max(minSize, newHeight);
+
+    top = dragData.startTop + (dragData.startHeight - height);
+  }
+  if (state.handleDirection === "bl") {
+    const newWidth = dragData.startWidth - dx;
+    width = Math.max(minSize, newWidth);
+
+    left = dragData.startLeft + (dragData.startWidth - width);
+
+    height = Math.max(minSize, dragData.startHeight + dy);
+  }
+  if (state.handleDirection === "tl") {
+    const newWidth = dragData.startWidth - dx;
+    width = Math.max(minSize, newWidth);
+
+    const newHeight = dragData.startHeight - dy;
+    height = Math.max(minSize, newHeight);
+
+    left = dragData.startLeft + (dragData.startWidth - width);
+    top = dragData.startTop + (dragData.startHeight - height);
+  }
 
   el.style.width = width + "px";
   el.style.height = height + "px";

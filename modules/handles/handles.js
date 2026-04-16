@@ -2,7 +2,7 @@ import { on,emit } from "../../core/events.js";
 import { state } from "../../core/state.js";
 
 
-let handlesContainer;
+let handlesContainer = null;
 
 // Este módulo se encarga de mostrar los handles de transformación (mover, rotar, redimensionar)
 export function initHandles() {
@@ -14,6 +14,21 @@ export function initHandles() {
   document.getElementById("canvas").appendChild(handlesContainer);
 
   on("selectionChanged", updateHandles);
+  on("toolChanged", refreshHandlesVisibility);
+}
+
+function refreshHandlesVisibility() {
+  if (!state.selected) {
+    handlesContainer.style.display = "none";
+    return;
+  }
+
+  if (state.tool !== "select") {
+    handlesContainer.style.display = "none";
+    return;
+  }
+
+  updateHandles(state.selected);
 }
 
 function loadHandlesCSS(){
@@ -69,7 +84,7 @@ function createHandles() {
 
 // Actualiza la posición y visibilidad de los handles según el elemento seleccionado
 function updateHandles(el) {
-  if (!el) {
+  if (!el || state.tool !== "select") {
     handlesContainer.style.display = "none";
     return;
   }
