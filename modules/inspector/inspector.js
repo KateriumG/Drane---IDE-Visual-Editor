@@ -4,6 +4,7 @@ import { rgbToHex } from "../../utils/dom.js";
 
 let textInput, borderInput, bgInput, colorInput;
 
+// Este módulo se encarga del panel lateral derecho que muestra las propiedades del elemento seleccionado
 export async function initInspector() {
   const container = document.getElementById("right-panel");
 

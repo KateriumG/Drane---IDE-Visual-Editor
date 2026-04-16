@@ -1,11 +1,12 @@
 import { state } from "./state.js";
 
-export function applyTransform(e, el, offsetX, offsetY, canvas) {
+// Este módulo se encarga de aplicar las transformaciones (mover, rotar, redimensionar)
+export function applyTransform(e, el, dragData, canvas) {
   if (!el) return;
 
   switch (state.tool) {
     case "move":
-      moveElement(e, el, offsetX, offsetY, canvas);
+      moveElement(e, el, dragData);
       break;
 
     case "rotate":
@@ -13,16 +14,17 @@ export function applyTransform(e, el, offsetX, offsetY, canvas) {
       break;
 
     case "resize":
-      resizeElement(e, el, canvas);
+      resizeElement(e, el, dragData);
       break;
   }
 }
 
-function moveElement(e, el, offsetX, offsetY, canvas) {
-  const rect = canvas.getBoundingClientRect();
+function moveElement(e, el, dragData) {
+  const dx = e.clientX - dragData.startMouseX;
+  const dy = e.clientY - dragData.startMouseY;
 
-  el.style.left = (e.clientX - rect.left - offsetX) + "px";
-  el.style.top = (e.clientY - rect.top - offsetY) + "px";
+  el.style.left = dragData.startLeft + dx + "px";
+  el.style.top = dragData.startTop + dy + "px";
 }
 
 function rotateElement(e, el) {
@@ -39,12 +41,10 @@ function rotateElement(e, el) {
   el.style.transform = `rotate(${angle}deg)`;
 }
 
-function resizeElement(e, el) {
-  const rect = el.getBoundingClientRect();
+function resizeElement(e, el, dragData) {
+  const dx = e.clientX - dragData.startMouseX;
+  const dy = e.clientY - dragData.startMouseY;
 
-  const newWidth = e.clientX - rect.left;
-  const newHeight = e.clientY - rect.top;
-
-  el.style.width = newWidth + "px";
-  el.style.height = newHeight + "px";
+  el.style.width = dragData.startWidth + dx + "px";
+  el.style.height = dragData.startHeight + dy + "px";
 }

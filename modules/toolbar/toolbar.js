@@ -4,6 +4,7 @@ import { emit, on } from "../../core/events.js";
 let container;
 let buttons = [];
 
+// Este módulo se encarga de la barra de herramientas superior (mover, rotar, redimensionar)
 export async function initToolbar() {
   container = document.getElementById("upper-panel");
 

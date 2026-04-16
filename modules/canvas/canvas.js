@@ -7,6 +7,9 @@ let dragging = null;
 let offsetX = 0;
 let offsetY = 0;
 
+let dragData = {};
+
+// Este módulo se encarga del área central donde se crean y manipulan los elementos
 export function initCanvas() {
   canvas = document.getElementById("canvas");
 
@@ -35,8 +38,20 @@ function makeInteractive(el) {
   el.addEventListener("mousedown", (e) => {
     selectElement(el);
 
-    offsetX = e.offsetX;
-    offsetY = e.offsetY;
+    const rect = el.getBoundingClientRect();
+
+    dragData = {
+    startMouseX: e.clientX,
+    startMouseY: e.clientY,
+    startLeft: parseFloat(el.style.left) || 0,
+    startTop: parseFloat(el.style.top) || 0,
+    startWidth: rect.width,
+    startHeight: rect.height,
+    offsetX: e.offsetX,
+    offsetY: e.offsetY
+  };
+
+
     if (state.tool !== "select") {
       dragging = el;
     }
@@ -53,7 +68,7 @@ function setupGlobalEvents() {
   document.addEventListener("mousemove", (e) => {
     if (!dragging) return;
 
-    applyTransform(e, dragging, offsetX, offsetY, canvas);
+    applyTransform(e, dragging, dragData, canvas);
   });
 
   document.addEventListener("mouseup", () => {
