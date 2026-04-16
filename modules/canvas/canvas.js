@@ -1,7 +1,7 @@
 import { state } from "../../core/state.js";
 import { applyTransform } from "../../core/transform.js";
 import { selectElement } from "../../core/selection.js";
-import { on } from "../../core/events.js";
+import { on,emit } from "../../core/events.js";
 
 
 let  canvas;
@@ -83,6 +83,9 @@ export function createElement(type) {
   el.style.left = "50px";
   el.style.top = "50px";
 
+  el.dataset.elementId = crypto.randomUUID();
+  el.dataset.parentId = "";
+
   el.addEventListener("mousedown", (e) => {
   selectElement(el);
 
@@ -109,6 +112,8 @@ export function createElement(type) {
   makeInteractive(el);
 
   state.elements.push(el);
+
+  emit("selectionChanged", el);
 }
 
 // interacción
@@ -148,7 +153,6 @@ function makeInteractive(el) {
 
 }
 
-
 function getMouseAngle(e, rect) {
   const centerX = rect.left + rect.width / 2;
   const centerY = rect.top + rect.height / 2;
@@ -159,6 +163,18 @@ function getMouseAngle(e, rect) {
   ) * 180 / Math.PI;
 }
 
+function checkParentDrop(el, e) {
+  const target = document.elementFromPoint(e.clientX, e.clientY);
+
+  if (!target || target === el) return;
+  if (!target.classList.contains("draggable")) return;
+
+  const parentId = target.dataset.elementId;
+  el.dataset.parentId = parentId;
+
+  emit("selectionChanged", state.selected);
+}
+
 // eventos globales
 function setupGlobalEvents() {
   document.addEventListener("mousemove", (e) => {
@@ -167,13 +183,21 @@ function setupGlobalEvents() {
     applyTransform(e, dragging, dragData, canvas);
   });
 
-  document.addEventListener("mouseup", () => {
+  document.addEventListener("mouseup", (e) => {
+    if (dragging && state.tool === "select") {
+      checkParentDrop(dragging, e);
+    }
+
     dragging = null;
     state.handleAction = null;
     state.handleDirection = null;
   });
 
-  canvas.addEventListener("click", () => {
-    selectElement(null);
+  canvas.addEventListener("click", (e) => {
+    if (state.tool !== "select") return;
+
+    if (e.target === canvas) {
+      selectElement(null);
+    }
   });
 }

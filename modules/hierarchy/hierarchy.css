@@ -1,0 +1,26 @@
+.hierarchy-panel {
+    padding: 10px;
+    border-left: 1px solid #333;
+    height: 100%;
+    overflow-y: auto;
+  }
+  
+  #hierarchy-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .hierarchy-item ul {
+    margin-left: 14px;
+    padding-left: 10px;
+    border-left: 1px solid rgba(255,255,255,0.1);
+  }
+  
+  .hierarchy-item:hover {
+    background: rgba(255,255,255,0.08);
+  }
+  
+  .hierarchy-item.active {
+    background: rgba(100,150,255,0.25);
+  }
