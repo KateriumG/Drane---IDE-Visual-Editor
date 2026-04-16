@@ -13,11 +13,21 @@ export async function initToolbar() {
 
   container.innerHTML = html;
 
+  loadToolbarCSS();
   cacheElements();
   bindEvents();
   updateActiveTool();
 
   on("toolChanged", updateActiveTool);
+}
+
+export function loadToolbarCSS() {
+  if (!document.querySelector('link[href="./modules/toolbar/toolbar.css"]')) {
+    const link = document.createElement("link");
+    link.rel = "stylesheet";
+    link.href = "./modules/toolbar/toolbar.css";
+    document.head.appendChild(link);
+  }
 }
 
 function cacheElements() {

@@ -17,6 +17,7 @@ export function applyTransform(e, el, dragData, canvas) {
       resizeElement(e, el, dragData);
       break;
   }
+  
 }
 
 function moveElement(e, el, dragData) {

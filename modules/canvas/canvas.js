@@ -1,6 +1,8 @@
 import { state } from "../../core/state.js";
 import { applyTransform } from "../../core/transform.js";
 import { selectElement } from "../../core/selection.js";
+import { on } from "../../core/events.js";
+
 
 let canvas;
 let dragging = null;
@@ -12,6 +14,21 @@ let dragData = {};
 // Este módulo se encarga del área central donde se crean y manipulan los elementos
 export function initCanvas() {
   canvas = document.getElementById("canvas");
+
+  on("startTransform", ({element, mouseX, mouseY}) => {
+  dragging = element;
+
+  const rect = element.getBoundingClientRect();
+
+  dragData = {
+    startMouseX: mouseX,
+    startMouseY: mouseY,
+    startLeft: parseFloat(element.style.left) || 0,
+    startTop: parseFloat(element.style.top) || 0,
+    startWidth: rect.width,
+    startHeight: rect.height
+  };
+});
 
   setupGlobalEvents();
 }
@@ -61,6 +78,7 @@ function makeInteractive(el) {
     e.stopPropagation();
     selectElement(el);
   });
+
 }
 
 // eventos globales
@@ -73,6 +91,7 @@ function setupGlobalEvents() {
 
   document.addEventListener("mouseup", () => {
     dragging = null;
+    state.handleAction = null;
   });
 
   canvas.addEventListener("click", () => {

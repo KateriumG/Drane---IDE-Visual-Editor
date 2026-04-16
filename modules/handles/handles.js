@@ -1,0 +1,77 @@
+import { on,emit } from "../../core/events.js";
+import { state } from "../../core/state.js";
+
+
+let handlesContainer;
+
+// Este módulo se encarga de mostrar los handles de transformación (mover, rotar, redimensionar)
+export function initHandles() {
+  handlesContainer = document.createElement("div");
+  handlesContainer.id = "transform-handles";
+
+    loadHandlesCSS();
+
+  document.getElementById("canvas").appendChild(handlesContainer);
+
+  on("selectionChanged", updateHandles);
+}
+
+function loadHandlesCSS(){
+    const link = document.createElement("link");
+    link.rel = "stylesheet";
+    link.href = "./modules/handles/handles.css";
+    document.head.appendChild(link);
+}
+
+function createHandles() {
+  handlesContainer.innerHTML = "";
+
+  const corners = ["tl", "tr", "bl", "br"];
+
+  corners.forEach(pos => {
+    const handle = document.createElement("div");
+    handle.className = `resize-handle ${pos}`;
+
+    handle.addEventListener("mousedown", (e) => {
+      e.stopPropagation();
+      state.handleAction = "resize";
+      emitter.emit("startTransform", state.selected);
+    });
+
+    handlesContainer.appendChild(handle);
+  });
+
+  const rotate = document.createElement("div");
+  rotate.className = "rotate-handle";
+
+  rotate.addEventListener("mousedown", (e) => {
+    e.stopPropagation();
+    state.handleAction = "rotate";
+    emit("startTransform", {
+        element: state.selected,
+        mouseX: e.clientX,
+        mouseY: e.clientY
+    });
+  });
+
+  handlesContainer.appendChild(rotate);
+}
+
+// Actualiza la posición y visibilidad de los handles según el elemento seleccionado
+function updateHandles(el) {
+  if (!el) {
+    handlesContainer.style.display = "none";
+    return;
+  }
+
+  createHandles();
+
+  const rect = el.getBoundingClientRect();
+  const canvasRect = document.getElementById("canvas").getBoundingClientRect();
+
+  handlesContainer.style.display = "block";
+  handlesContainer.style.left = rect.left - canvasRect.left + "px";
+  handlesContainer.style.top = rect.top - canvasRect.top + "px";
+  handlesContainer.style.width = rect.width + "px";
+  handlesContainer.style.height = rect.height + "px";
+}

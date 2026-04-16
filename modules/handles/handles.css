@@ -1,0 +1,28 @@
+#transform-handles {
+  position: absolute;
+  border: 1px dashed #4da6ff;
+  pointer-events: none;
+}
+
+.resize-handle,
+.rotate-handle {
+  width: 10px;
+  height: 10px;
+  background: white;
+  border: 1px solid #4da6ff;
+  position: absolute;
+  pointer-events: auto;
+}
+
+.tl { top: -5px; left: -5px; cursor: nwse-resize; }
+.tr { top: -5px; right: -5px; cursor: nesw-resize; }
+.bl { bottom: -5px; left: -5px; cursor: nesw-resize; }
+.br { bottom: -5px; right: -5px; cursor: nwse-resize; }
+
+.rotate-handle {
+  top: -25px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  cursor: grab;
+}
