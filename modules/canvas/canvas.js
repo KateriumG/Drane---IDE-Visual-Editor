@@ -10,24 +10,11 @@ let offsetY = 0;
 export function initCanvas() {
   canvas = document.getElementById("canvas");
 
-  setupUI();
   setupGlobalEvents();
 }
 
-// botones crear
-function setupUI() {
-  document.getElementById("btn-div")
-    .addEventListener("click", () => createElement("div"));
-
-  document.getElementById("btn-button")
-    .addEventListener("click", () => createElement("button"));
-
-  document.getElementById("btn-h1")
-    .addEventListener("click", () => createElement("h1"));
-}
-
 // crear elementos
-function createElement(type) {
+export function createElement(type) {
   const el = document.createElement(type);
 
   el.classList.add("draggable");
@@ -46,9 +33,13 @@ function createElement(type) {
 // interacción
 function makeInteractive(el) {
   el.addEventListener("mousedown", (e) => {
-    dragging = el;
+    selectElement(el);
+
     offsetX = e.offsetX;
     offsetY = e.offsetY;
+    if (state.tool !== "select") {
+      dragging = el;
+    }
   });
 
   el.addEventListener("click", (e) => {

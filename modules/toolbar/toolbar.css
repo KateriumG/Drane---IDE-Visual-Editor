@@ -1,0 +1,15 @@
+#toolbar {
+  display: flex;
+  gap: 8px;
+  padding: 8px;
+  background: #222;
+}
+
+#toolbar button {
+  padding: 8px;
+  cursor: pointer;
+}
+
+.active-tool {
+  outline: 2px solid #4da6ff;
+}
