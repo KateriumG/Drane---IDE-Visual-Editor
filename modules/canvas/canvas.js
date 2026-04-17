@@ -163,18 +163,6 @@ function getMouseAngle(e, rect) {
   ) * 180 / Math.PI;
 }
 
-function checkParentDrop(el, e) {
-  const target = document.elementFromPoint(e.clientX, e.clientY);
-
-  if (!target || target === el) return;
-  if (!target.classList.contains("draggable")) return;
-
-  const parentId = target.dataset.elementId;
-  el.dataset.parentId = parentId;
-
-  emit("selectionChanged", state.selected);
-}
-
 // eventos globales
 function setupGlobalEvents() {
   document.addEventListener("mousemove", (e) => {
@@ -184,9 +172,6 @@ function setupGlobalEvents() {
   });
 
   document.addEventListener("mouseup", (e) => {
-    if (dragging && state.tool === "select") {
-      checkParentDrop(dragging, e);
-    }
 
     dragging = null;
     state.handleAction = null;
