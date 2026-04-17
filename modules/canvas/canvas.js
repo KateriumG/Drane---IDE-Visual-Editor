@@ -74,14 +74,16 @@ export function initCanvas() {
 }
 
 // crear elementos
-export function createElement(type) {
+export function createElement(type, skipDefaults = false) {
   const el = document.createElement(type);
 
-  el.classList.add("draggable");
-  el.innerText = type;
+  if (!skipDefaults) {
+    el.innerText = type;
+    el.style.left = "50px";
+    el.style.top = "50px";
+  }
 
-  el.style.left = "50px";
-  el.style.top = "50px";
+  el.classList.add("draggable");
 
   el.dataset.elementId = crypto.randomUUID();
   el.dataset.parentId = "";
