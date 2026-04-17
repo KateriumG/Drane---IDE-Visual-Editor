@@ -1,11 +1,14 @@
 body {
     margin: 0;
     height: 100vh;
+    display: flex;
+    flex-direction: column;
   }
 
-  .panel {
-    z-index: 100;
-  }
+.panel {
+  position: relative;
+  z-index: 9999;
+}
 
   #upper-panel {
     height: 50px;
@@ -19,7 +22,6 @@ body {
   #main-area {
     display: flex;
     flex: 1;
-    height: 100%;
   }
   
   /* izquierda */
@@ -56,11 +58,27 @@ body {
   /* elementos */
   .draggable {
     position: absolute;
+    box-sizing: border-box;
     padding: 10px;
     border: 1px solid black;
     cursor: move;
+  }
+
+  .draggable > .draggable {
+    position: absolute;
+    box-sizing: border-box;
   }
   
   .selected {
     outline: 2px solid blue;
   }
+
+  #editor-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.editing-parent > * {
+  pointer-events: none;
+}

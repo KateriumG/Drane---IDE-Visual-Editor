@@ -11,7 +11,7 @@ export function initHandles() {
 
     loadHandlesCSS();
 
-  document.getElementById("canvas").appendChild(handlesContainer);
+  document.getElementById("editor-overlay").appendChild(handlesContainer);
 
   on("selectionChanged", updateHandles);
   on("toolChanged", refreshHandlesVisibility);
@@ -46,6 +46,7 @@ function createHandles() {
   corners.forEach(pos => {
     const handle = document.createElement("div");
     handle.className = `resize-handle ${pos}`;
+    handle.classList.add("transform-handle");
 
     handle.addEventListener("mousedown", (e) => {
       e.stopPropagation();
@@ -65,6 +66,7 @@ function createHandles() {
 
   const rotate = document.createElement("div");
   rotate.className = "rotate-handle";
+  rotate.classList.add("transform-handle");
 
   rotate.addEventListener("mousedown", (e) => {
     e.stopPropagation();
@@ -92,7 +94,7 @@ function updateHandles(el) {
   createHandles();
 
   const rect = el.getBoundingClientRect();
-  const canvasRect = document.getElementById("canvas").getBoundingClientRect();
+  const canvasRect = document.getElementById("editor-overlay").getBoundingClientRect();
 
   handlesContainer.style.display = "block";
   handlesContainer.style.left = rect.left - canvasRect.left + "px";

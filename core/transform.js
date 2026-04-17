@@ -66,7 +66,9 @@ function resizeElement(e, el, dragData) {
   const dy = e.clientY - dragData.startMouseY;
 
   const threshold = 2;
-  if (Math.abs(dx) < threshold && Math.abs(dy) < threshold) return;
+
+if (Math.abs(dx) < threshold) dx = 0;
+if (Math.abs(dy) < threshold) dy = 0;
 
   let width = dragData.startWidth;
   let height = dragData.startHeight;

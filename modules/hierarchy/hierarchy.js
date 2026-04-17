@@ -1,6 +1,7 @@
 import { state } from "../../core/state.js";
 import { on,emit } from "../../core/events.js";
 import { selectElement } from "../../core/selection.js";
+import { syncDOMHierarchy,convertToLocalPosition,convertToGlobalPosition } from "../../core/hierarchy-sync.js";
 
 let list;
 
@@ -22,6 +23,7 @@ export async function initHierarchy() {
 
     rootDrop.addEventListener("drop", (e) => {
       e.preventDefault();
+      rootDrop.classList.remove("active");
 
       const draggedId = e.dataTransfer.getData("text/plain");
 
@@ -31,10 +33,21 @@ export async function initHierarchy() {
 
       if (!draggedEl) return;
 
+      convertToGlobalPosition(draggedEl);
       draggedEl.dataset.parentId = "";
 
+      syncDOMHierarchy();
       emit("selectionChanged", state.selected);
     });
+
+    rootDrop.addEventListener("dragenter", () => {
+  rootDrop.classList.add("active");
+});
+
+rootDrop.addEventListener("dragleave", () => {
+  rootDrop.classList.remove("active");
+});
+
   
     on("selectionChanged", renderHierarchy);
   
@@ -88,6 +101,8 @@ export async function initHierarchy() {
     content.textContent = el.tagName.toLowerCase();
     content.draggable = true;
 
+    let dragCounter = 0;
+
     wrapper.appendChild(dropTop);
     wrapper.appendChild(content);
     wrapper.appendChild(dropBottom);
@@ -126,23 +141,28 @@ export async function initHierarchy() {
     });
 
     content.addEventListener("dragover", (e) => {
-  e.preventDefault(); // 🔥 ESTO ES LO QUE FALTA
-});
+      e.preventDefault(); 
+    });
 
-    content.addEventListener("dragenter", () => {
+    content.addEventListener("dragenter", (e) => {
+      e.preventDefault();
+      dragCounter++;
       content.classList.add("active");
     });
 
     content.addEventListener("drop", (e) => {
       e.preventDefault();
+      dragCounter = 0;
       content.classList.remove("active");
 
       const draggedEl = getDraggedElement(e);
       if (!draggedEl || draggedEl === el) return;
       if (isChildOf(el, draggedEl)) return;
 
+      convertToLocalPosition(draggedEl, el);
       draggedEl.dataset.parentId = el.dataset.elementId;
 
+      syncDOMHierarchy();
       emit("selectionChanged", state.selected);
     });
 
@@ -151,7 +171,12 @@ export async function initHierarchy() {
     });
 
     content.addEventListener("dragleave", () => {
-      content.classList.remove("active");
+      dragCounter--;
+
+      if (dragCounter <= 0) {
+        dragCounter = 0;
+        content.classList.remove("active");
+      }
     });
 
 
@@ -232,6 +257,7 @@ function isChildOf(parent, child) {
 
     moveInArray(state.elements, fromIndex, toIndex);
 
+    syncDOMHierarchy();
     emit("selectionChanged", state.selected);
   }
 
@@ -245,3 +271,4 @@ function moveInArray(array, fromIndex, toIndex) {
 
   array.splice(toIndex, 0, item);
 }
+
