@@ -125,6 +125,8 @@ function makeInteractive(el) {
 
     if (state.tool !== "select") return;
 
+    document.body.classList.add("no-select");
+
     const rect = el.getBoundingClientRect();
 
 
@@ -170,14 +172,23 @@ function setupGlobalEvents() {
   document.addEventListener("mousemove", (e) => {
     if (!dragging) return;
 
+    e.preventDefault();
+
     applyTransform(e, dragging, dragData, canvas);
   });
 
   document.addEventListener("mouseup", (e) => {
+    if (dragging){
+      emit("sceneChanged");
+    }
 
     dragging = null;
     state.handleAction = null;
     state.handleDirection = null;
+
+    document.body.classList.remove("no-select");
+
+    emit("selectionChanged", state.selected);
   });
 
   canvas.addEventListener("click", (e) => {

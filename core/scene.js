@@ -26,6 +26,21 @@ export function saveScene() {
     "drane_scene",
     JSON.stringify(data)
   );
+
+}
+
+let autosaveTimer = null;
+
+export function queueAutosave() {
+  clearTimeout(autosaveTimer);
+
+  autosaveTimer = setTimeout(() => {
+    saveScene();
+  }, 500);
+}
+
+export function initSceneAutosave() {
+  on("sceneChanged", queueAutosave);
 }
 
 export function loadScene() {

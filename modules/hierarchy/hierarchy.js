@@ -38,6 +38,7 @@ export async function initHierarchy() {
 
       syncDOMHierarchy();
       emit("selectionChanged", state.selected);
+      emit("sceneChanged");
     });
 
     rootDrop.addEventListener("dragenter", () => {

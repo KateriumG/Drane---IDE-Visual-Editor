@@ -32,6 +32,7 @@ export function applyTransform(e, el, dragData, canvas) {
       break;
   }
   emit("selectionChanged", el);
+  emit("sceneChanged");
 }
 
 function moveElement(e, el, dragData) {

@@ -5,19 +5,29 @@ body {
     flex-direction: column;
   }
 
+.no-select {
+  user-select: none;
+}
+
 .panel {
   position: relative;
   z-index: 999;
 }
 
-  #upper-panel {
-    height: 50px;
-    background: #333;
-    color: white;
-    display: flex;
-    align-items: center;
-    padding: 0 10px;
-  }
+#top-panel {
+  position: relative;
+  z-index: 2000;
+}
+
+#upper-panel {
+
+  height: 50px;
+  background: #333;
+  color: white;
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+}
 
   #main-area {
     display: flex;
@@ -38,6 +48,7 @@ body {
     position: relative;
     background: #f0f0f0;
     z-index: 0;
+    user-select: none;
   }
   
   /* derecha (INSPECTOR) */
@@ -77,6 +88,7 @@ body {
   position: absolute;
   inset: 0;
   pointer-events: none;
+  z-index: 10;
 }
 
 .editing-parent > * {

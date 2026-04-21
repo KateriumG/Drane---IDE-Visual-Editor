@@ -30,6 +30,7 @@ function bindEvents() {
   textInput.addEventListener("input", () => {
     if (state.selected) {
       state.selected.innerText = textInput.value;
+      emit("sceneChanged");
     }
   });
 
