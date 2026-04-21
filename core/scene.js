@@ -1,6 +1,6 @@
 import { state } from "./state.js";
 import { on, emit } from "./events.js";
-import { syncDOMHierarchy } from "./hierarchy.js";
+import { syncDOMHierarchy } from "./hierarchy-sync.js";
 
 export function serializeScene() {
   return state.elements.map(el => ({
