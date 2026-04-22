@@ -7,6 +7,7 @@ import { initHierarchy } from "./modules/hierarchy/hierarchy.js";
 import { initHandles } from "./modules/handles/handles.js";
 import { initSceneAutosave } from "./core/scene.js";
 import { pushHistory } from "./core/history.js";
+import { initViewport } from "./core/viewport.js";
 
 
 
@@ -20,6 +21,7 @@ async function init() {
     initHandles();
     initSceneAutosave();
     pushHistory();
+    initViewport();
 }
 
 init();
