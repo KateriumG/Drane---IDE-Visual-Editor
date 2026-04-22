@@ -2,6 +2,7 @@ import { state } from "../../core/state.js";
 import { applyTransform } from "../../core/transform.js";
 import { selectElement } from "../../core/selection.js";
 import { on,emit } from "../../core/events.js";
+import { pushHistory } from "../../core/history.js";
 
 
 let  canvas;
@@ -179,6 +180,7 @@ function setupGlobalEvents() {
 
   document.addEventListener("mouseup", (e) => {
     if (dragging){
+      pushHistory();
       emit("sceneChanged");
     }
 

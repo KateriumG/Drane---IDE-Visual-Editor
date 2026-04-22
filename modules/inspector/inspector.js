@@ -1,6 +1,7 @@
 import { state } from "../../core/state.js";
 import { on } from "../../core/events.js";
 import { rgbToHex } from "../../utils/dom.js";
+import { pushHistory } from "../../core/history.js";
 
 let textInput, borderInput, bgInput, colorInput;
 
@@ -30,6 +31,8 @@ function bindEvents() {
   textInput.addEventListener("input", () => {
     if (state.selected) {
       state.selected.innerText = textInput.value;
+
+      pushHistory();
       emit("sceneChanged");
     }
   });

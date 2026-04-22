@@ -54,6 +54,9 @@ export function loadScene() {
 export function restoreScene(data, createElement) {
   if (!data) return;
 
+  state.elements.forEach(el => el.remove());
+  state.elements = [];
+
   data.forEach(item => {
     const el = createElement(item.tag, true);
 

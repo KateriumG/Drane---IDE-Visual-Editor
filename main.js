@@ -6,6 +6,7 @@ import { initToolbar } from "./modules/toolbar/toolbar.js";
 import { initHierarchy } from "./modules/hierarchy/hierarchy.js";
 import { initHandles } from "./modules/handles/handles.js";
 import { initSceneAutosave } from "./core/scene.js";
+import { pushHistory } from "./core/history.js";
 
 
 
@@ -18,6 +19,19 @@ async function init() {
     initHeader();
     initHandles();
     initSceneAutosave();
+    pushHistory();
 }
 
 init();
+
+document.addEventListener("keydown", (e) => {
+  if (e.ctrlKey && e.key === "z") {
+    e.preventDefault();
+    undo(createElement);
+  }
+
+  if (e.ctrlKey && e.key === "y") {
+    e.preventDefault();
+    redo(createElement);
+  }
+});
