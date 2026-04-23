@@ -55,7 +55,7 @@ body {
     position: absolute;
     inset: 0;
     transform-origin: 0 0;
-    background: #f0f0f0;
+    background: #b3b3b3;
     z-index: 0;
     user-select: none;
   }

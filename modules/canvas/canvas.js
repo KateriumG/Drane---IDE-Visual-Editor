@@ -32,8 +32,8 @@ export function initCanvas() {
       startMouseY: e.clientY,
       startLeft: parseFloat(state.selected.style.left) || 0,
       startTop: parseFloat(state.selected.style.top) || 0,
-      startWidth: rect.width,
-      startHeight: rect.height,
+      startWidth: rect.width / state.canvasZoom,
+      startHeight: rect.height / state.canvasZoom,
       startRotation: parseFloat(state.selected.dataset.rotation || 0),
       startAngle: getMouseAngle(e, rect)
     };
@@ -64,8 +64,8 @@ export function initCanvas() {
     startMouseY: mouseY,
     startLeft: parseFloat(element.style.left) || 0,
     startTop: parseFloat(element.style.top) || 0,
-    startWidth: rect.width,
-    startHeight: rect.height,
+    startWidth: rect.width / state.canvasZoom,
+    startHeight: rect.height / state.canvasZoom,
     startRotation : parseFloat(element.dataset.rotation || 0),
     startAngle : startAngle
   };
@@ -103,8 +103,8 @@ export function createElement(type, skipDefaults = false) {
     startMouseY: e.clientY,
     startLeft: parseFloat(el.style.left) || 0,
     startTop: parseFloat(el.style.top) || 0,
-    startWidth: rect.width,
-    startHeight: rect.height,
+    startWidth: rect.width / state.canvasZoom,
+    startHeight: rect.height / state.canvasZoom,
     startRotation: parseFloat(el.dataset.rotation || 0),
     startAngle: getMouseAngle(e, rect)
   };
@@ -122,6 +122,8 @@ export function createElement(type, skipDefaults = false) {
 // interacción
 function makeInteractive(el) {
   el.addEventListener("mousedown", (e) => {
+    if (e.target !== el) return;
+
     selectElement(el);
 
     if (state.tool !== "select") return;
@@ -137,8 +139,8 @@ function makeInteractive(el) {
     startMouseY: e.clientY,
     startLeft: parseFloat(el.style.left) || 0,
     startTop: parseFloat(el.style.top) || 0,
-    startWidth: rect.width,
-    startHeight: rect.height,
+    startWidth: rect.width / state.canvasZoom,
+    startHeight: rect.height / state.canvasZoom,
     offsetX: e.offsetX,
     offsetY: e.offsetY,
     startRotation: parseFloat(el.dataset.rotation || 0),
@@ -152,6 +154,8 @@ function makeInteractive(el) {
   });
 
   el.addEventListener("click", (e) => {
+    if (e.target !== el) return;
+
     e.stopPropagation();
     selectElement(el);
   });

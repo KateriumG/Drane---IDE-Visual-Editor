@@ -21,17 +21,38 @@ export function updateViewport() {
 }
 
 function setupZoom() {
-  canvas.addEventListener("wheel", (e) => {
+  const viewport = document.getElementById("canvas-viewport");
+
+  viewport.addEventListener("wheel", (e) => {
     e.preventDefault();
 
-    const zoomAmount = e.deltaY * -0.001;
+    const oldZoom = state.canvasZoom;
 
-    state.canvasZoom += zoomAmount;
+    const zoomFactor = e.deltaY < 0 ? 1.1 : 0.9;
 
-    state.canvasZoom = Math.min(
-      Math.max(0.25, state.canvasZoom),
-      3
+    const newZoom = Math.min(
+      Math.max(0.25, oldZoom * zoomFactor),
+      4
     );
+
+    const rect = viewport.getBoundingClientRect();
+
+    const mouseX = e.clientX - rect.left;
+    const mouseY = e.clientY - rect.top;
+
+    const worldX =
+      (mouseX - state.canvasOffsetX) / oldZoom;
+
+    const worldY =
+      (mouseY - state.canvasOffsetY) / oldZoom;
+
+    state.canvasZoom = newZoom;
+
+    state.canvasOffsetX =
+      mouseX - worldX * newZoom;
+
+    state.canvasOffsetY =
+      mouseY - worldY * newZoom;
 
     updateViewport();
   });

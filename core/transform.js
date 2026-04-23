@@ -36,8 +36,11 @@ export function applyTransform(e, el, dragData, canvas) {
 }
 
 function moveElement(e, el, dragData) {
-  const dx = e.clientX - dragData.startMouseX;
-  const dy = e.clientY - dragData.startMouseY;
+  const dx =
+  (e.clientX - dragData.startMouseX) / state.canvasZoom;
+
+const dy =
+  (e.clientY - dragData.startMouseY) / state.canvasZoom;
 
   el.style.left = dragData.startLeft + dx + "px";
   el.style.top = dragData.startTop + dy + "px";
@@ -63,8 +66,11 @@ function rotateElement(e, el, dragData) {
 }
 
 function resizeElement(e, el, dragData) {
-  const dx = e.clientX - dragData.startMouseX;
-  const dy = e.clientY - dragData.startMouseY;
+  const dx =
+  (e.clientX - dragData.startMouseX) / state.canvasZoom;
+
+const dy =
+  (e.clientY - dragData.startMouseY) / state.canvasZoom;
 
   const threshold = 2;
 
