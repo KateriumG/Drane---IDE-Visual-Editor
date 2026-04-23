@@ -205,3 +205,18 @@ function setupGlobalEvents() {
     }
   });
 }
+
+export function updateGrid() {
+  const canvas = document.getElementById("canvas");
+
+  canvas.classList.toggle(
+    "show-grid",
+    state.gridSnap
+  );
+
+  const size =
+  state.gridSize * state.canvasZoom;
+
+canvas.style.backgroundSize =
+  `${size}px ${size}px`;
+}

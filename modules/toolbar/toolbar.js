@@ -1,5 +1,6 @@
 import { state } from "../../core/state.js";
 import { emit, on } from "../../core/events.js";
+import { updateGrid } from "../canvas/canvas.js";
 
 let container;
 let buttons = [];
@@ -46,6 +47,14 @@ function bindEvents() {
       emit("toolChanged", tool);
     });
   });
+
+  document.getElementById("btn-grid-snap").addEventListener("click", () => {
+  state.gridSnap = !state.gridSnap;
+
+  document.getElementById("btn-grid-snap").classList.toggle("active", state.gridSnap);
+
+  updateGrid();
+});
 }
 
 function updateActiveTool() {

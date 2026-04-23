@@ -1,5 +1,6 @@
 import { state } from "./state.js";
 import { emit } from "./events.js";
+import { snap } from "../utils/math.js";
 
 // Este módulo se encarga de aplicar las transformaciones (mover, rotar, redimensionar)
 export function applyTransform(e, el, dragData, canvas) {
@@ -37,13 +38,21 @@ export function applyTransform(e, el, dragData, canvas) {
 
 function moveElement(e, el, dragData) {
   const dx =
-  (e.clientX - dragData.startMouseX) / state.canvasZoom;
+    (e.clientX - dragData.startMouseX) / state.canvasZoom;
 
-const dy =
-  (e.clientY - dragData.startMouseY) / state.canvasZoom;
+  const dy =
+    (e.clientY - dragData.startMouseY) / state.canvasZoom;
 
-  el.style.left = dragData.startLeft + dx + "px";
-  el.style.top = dragData.startTop + dy + "px";
+  let left = dragData.startLeft + dx;
+  let top = dragData.startTop + dy;
+
+  if (state.gridSnap) {
+    left = snap(left, state.gridSize);
+    top = snap(top, state.gridSize);
+  }
+
+  el.style.left = left + "px";
+  el.style.top = top + "px";
 }
 
 function rotateElement(e, el, dragData) {
@@ -113,6 +122,13 @@ if (Math.abs(dy) < threshold) dy = 0;
 
     left = dragData.startLeft + (dragData.startWidth - width);
     top = dragData.startTop + (dragData.startHeight - height);
+  }
+
+  if (state.gridSnap) {
+  width = snap(width, state.gridSize);
+  height = snap(height, state.gridSize);
+  left = snap(left, state.gridSize);
+  top = snap(top, state.gridSize);
   }
 
   el.style.width = width + "px";

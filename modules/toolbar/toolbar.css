@@ -13,3 +13,8 @@
 .active-tool {
   outline: 2px solid #4da6ff;
 }
+
+#btn-grid-snap.active {
+  background: #4caf50;
+  color: white;
+}
