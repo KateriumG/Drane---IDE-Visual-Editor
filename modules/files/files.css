@@ -1,3 +1,21 @@
 .file-item.active {
   background: #444;
 }
+
+.file-context-menu {
+  position: fixed;
+  display: none;
+  background: #222;
+  border: 1px solid #555;
+  z-index: 9999;
+  min-width: 120px;
+}
+
+.file-context-menu div {
+  padding: 8px 12px;
+  cursor: pointer;
+}
+
+.file-context-menu div:hover {
+  background: #333;
+}

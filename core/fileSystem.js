@@ -66,3 +66,33 @@ export function getFiles() {
   return getProject().files;
 }
 
+export function renameFile(fileId, newName) {
+  const project = getProject();
+
+  const file = project.files.find(
+    f => f.id === fileId
+  );
+
+  if (!file) return;
+
+  file.name = newName.endsWith(".scene")
+    ? newName
+    : newName + ".scene";
+
+  saveProject(project);
+}
+
+export function deleteFile(fileId) {
+  const project = getProject();
+
+  project.files = project.files.filter(
+    f => f.id !== fileId
+  );
+
+  if (project.currentFile === fileId) {
+    project.currentFile =
+      project.files[0]?.id || null;
+  }
+
+  saveProject(project);
+}
