@@ -40,14 +40,6 @@ export function initSceneAutosave() {
   on("sceneChanged", queueAutosave);
 }
 
-export function loadScene() {
-  const raw = localStorage.getItem("drane_scene");
-
-  if (!raw) return null;
-
-  return JSON.parse(raw);
-}
-
 export function loadSceneById(fileId, createElement) {
   const file = loadFile(fileId);
 
@@ -55,20 +47,21 @@ export function loadSceneById(fileId, createElement) {
 
   clearScene();
   restoreScene(file.data, createElement);
+
+  emit("filesChanged")
 }
 
 export function restoreScene(data, createElement) {
   if (!data) return;
 
-  state.elements.forEach(el => el.remove());
-  state.elements = [];
+  clearScene();
 
   data.forEach(item => {
-    const el = document.createElement(item.tag, true);
+    const el = createElement(item.tag, true);
 
     el.dataset.elementId = item.id;
-    el.dataset.parentId = item.parentId;
-    el.dataset.rotation = item.rotation;
+    el.dataset.parentId = item.parentId || "";
+    el.dataset.rotation = item.rotation || 0;
 
     el.innerText = item.text;
     el.style.left = item.left;
@@ -81,8 +74,8 @@ export function restoreScene(data, createElement) {
     el.style.transform = `rotate(${item.rotation}deg)`;
   });
 
-    syncDOMHierarchy();
-    emit("selectionChanged", null);
+  syncDOMHierarchy();
+  emit("selectionChanged", null);
 }
 
 export function clearScene() {

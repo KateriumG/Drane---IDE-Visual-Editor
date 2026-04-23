@@ -1,6 +1,6 @@
 import { getFiles, loadFile, getProject } from "../../core/fileSystem.js";
 import { restoreScene,loadSceneById } from "../../core/scene.js";
-import { emit } from "../../core/events.js";
+import { emit,on } from "../../core/events.js";
 import { createElement } from "../canvas/canvas.js";
 
 let container;
@@ -11,6 +11,7 @@ export function initFilesPanel() {
   loadFilesCSS();
   renderFiles();
 
+  on("filesChanged", renderFiles);
 }
 
 function loadFilesCSS() {
@@ -41,10 +42,7 @@ export function renderFiles() {
     }   
 
     item.addEventListener("click", () => {
-      const loaded = loadSceneById(file.id, createElement);
-
-      restoreScene(loaded.data);
-      emit("selectionChanged", null);
+      loadSceneById(file.id, createElement);
     });
 
     container.appendChild(item);

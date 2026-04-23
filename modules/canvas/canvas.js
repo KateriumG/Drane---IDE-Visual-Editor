@@ -117,6 +117,8 @@ export function createElement(type, skipDefaults = false) {
   state.elements.push(el);
 
   emit("selectionChanged", el);
+
+  return el;
 }
 
 // interacción
