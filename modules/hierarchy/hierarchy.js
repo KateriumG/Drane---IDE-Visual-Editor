@@ -98,8 +98,46 @@ rootDrop.addEventListener("dragleave", () => {
     if (state.selected === el) {
       content.classList.add("active");
     }
+
+    // Agregar flecha de colapsar/expandir si el elemento tiene hijos
+    const arrow = document.createElement("span");
+    arrow.className = "tree-arrow";
+
+    const children = state.elements.filter(
+      child => child.dataset.parentId === el.dataset.elementId
+    );
+
+    if (children.length > 0) {
+      const collapsed =
+      state.collapsedNodes.has(el.dataset.elementId);
+
+      arrow.textContent = collapsed ? "▶" : "▼";
+    } else {
+      arrow.textContent = "";
+    }
+
+    content.appendChild(arrow);
+
+    const label = document.createElement("span");
+    label.textContent = el.tagName.toLowerCase();
+
+    content.appendChild(label);
+
+    arrow.addEventListener("mousedown", (e) => {
+      e.stopPropagation();
+
+      const id = el.dataset.elementId;
+
+      if (state.collapsedNodes.has(id)) {
+        state.collapsedNodes.delete(id);
+      } else {
+        state.collapsedNodes.add(id);
+      }
+
+      renderHierarchy();
+    });
   
-    content.textContent = el.tagName.toLowerCase();
+    // Hacer que el contenido sea un área de arrastre para permitir reordenar y anidar elementos
     content.draggable = true;
 
     let dragCounter = 0;
@@ -167,7 +205,9 @@ rootDrop.addEventListener("dragleave", () => {
       emit("selectionChanged", state.selected);
     });
 
-    content.addEventListener("click", () => {
+    content.addEventListener("mousedown", (e) => {
+      if (e.button !== 0) return; 
+      e.stopPropagation();
       selectElement(el);
     });
 
@@ -201,11 +241,7 @@ rootDrop.addEventListener("dragleave", () => {
       dropBottom.classList.remove("active");
     });
 
-    const children = state.elements.filter(
-      child => child.dataset.parentId === el.dataset.elementId
-    ); 
-
-    if (children.length > 0) {
+    if (children.length > 0 && !state.collapsedNodes.has(el.dataset.elementId)) {
       const childrenContainer = document.createElement("div");
       childrenContainer.className = "tree-children";
 
