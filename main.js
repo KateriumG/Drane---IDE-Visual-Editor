@@ -8,6 +8,7 @@ import { initHandles } from "./modules/handles/handles.js";
 import { initSceneAutosave } from "./core/scene.js";
 import { pushHistory } from "./core/history.js";
 import { initViewport } from "./core/viewport.js";
+import { initFilesPanel } from "./modules/files/files.js";
 
 
 
@@ -22,6 +23,7 @@ async function init() {
     initSceneAutosave();
     pushHistory();
     initViewport();
+    initFilesPanel();
 }
 
 init();

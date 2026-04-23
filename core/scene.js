@@ -1,7 +1,9 @@
 import { state } from "./state.js";
 import { on, emit } from "./events.js";
 import { syncDOMHierarchy } from "./hierarchy-sync.js";
+import { saveCurrentFile,loadFile } from "./fileSystem.js";
 
+// Scene management: serialization, saving, loading, and autosave
 export function serializeScene() {
   return state.elements.map(el => ({
     id: el.dataset.elementId,
@@ -20,13 +22,7 @@ export function serializeScene() {
 }
 
 export function saveScene() {
-  const data = serializeScene();
-
-  localStorage.setItem(
-    "drane_scene",
-    JSON.stringify(data)
-  );
-
+  saveCurrentFile(serializeScene());
 }
 
 let autosaveTimer = null;
@@ -39,6 +35,7 @@ export function queueAutosave() {
   }, 500);
 }
 
+// Initialize autosave on scene changes
 export function initSceneAutosave() {
   on("sceneChanged", queueAutosave);
 }
@@ -51,6 +48,15 @@ export function loadScene() {
   return JSON.parse(raw);
 }
 
+export function loadSceneById(fileId, createElement) {
+  const file = loadFile(fileId);
+
+  if (!file) return;
+
+  clearScene();
+  restoreScene(file.data, createElement);
+}
+
 export function restoreScene(data, createElement) {
   if (!data) return;
 
@@ -58,7 +64,7 @@ export function restoreScene(data, createElement) {
   state.elements = [];
 
   data.forEach(item => {
-    const el = createElement(item.tag, true);
+    const el = document.createElement(item.tag, true);
 
     el.dataset.elementId = item.id;
     el.dataset.parentId = item.parentId;
@@ -77,4 +83,13 @@ export function restoreScene(data, createElement) {
 
     syncDOMHierarchy();
     emit("selectionChanged", null);
+}
+
+export function clearScene() {
+  state.elements.forEach(el => el.remove());
+
+  state.elements = [];
+  state.selected = null;
+
+  emit("selectionChanged", null);
 }
