@@ -86,6 +86,7 @@ export function createElement(type, skipDefaults = false) {
 
   el.classList.add("draggable");
 
+  el.dataset.name = type;
   el.dataset.elementId = crypto.randomUUID();
   el.dataset.parentId = "";
 
